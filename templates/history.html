@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculation History</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- Topbar with theme toggle -->
+  <div class="topbar">
+    <h1>⏳ History</h1>
+    <button id="theme-toggle" title="Toggle Theme">🌞</button>
+  </div>
+
+  <div class="main">
+    <!-- History Card -->
+    <div class="calculator-card">
+      <div class="card-header">
+        <div>
+          <h2>Past Moves</h2>
+          <p>Because every calculation leaves a trace 📜</p>
+        </div>
+      </div>
+
+      <ul id="history-list">
+        {% if history %}
+          {% for item in history %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        {% else %}
+          <li>No history yet</li>
+        {% endif %}
+      </ul>
+      <form method="POST" action="/clear-history" class="Clear form">
+    <button type="submit" class="clear-btn">Clear History</button>
+      </form>
+    </div>
+
+    <!-- 🔥 Constant Tools Card -->
+    <div class="tools-card">
+      <h3>More Tools</h3>
+      <p>Explore other features.</p>
+      <div class="icons">
+        <a href="/age">🎂<br>Age</a>
+        <a href="/emi">🏠<br>EMI</a>
+        <a href="/">🧮<br>Calci</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark');
+      toggle.textContent = '🌙';
+    }
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      if (body.classList.contains('dark')) {
+        toggle.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        toggle.textContent = '🌞';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+</body>
+</html>

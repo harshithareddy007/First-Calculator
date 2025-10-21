@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="topbar">
+    <h1>🎂 Age Calculator</h1>
+    <button id="theme-toggle" title="Toggle Theme">🌞</button>
+  </div>
+
+  <div class="main">
+    <div class="calculator-card">
+      <div class="card-header">
+        <div>
+          <h2>Time Teller</h2>
+          <p>Find how long your vibe’s been on this planet 💖</p>
+        </div>
+      </div>
+
+      <form method="POST" class="age-form">
+        <label>Date of Birth:</label>
+        <input type="date" name="dob" required />
+
+        <label>Calculate Till (optional):</label>
+        <input type="date" name="current" />
+
+        <button type="submit" class="op">Calculate</button>
+      </form>
+
+      {% if result %}
+        <div class="result">🎉 You are <strong>{{ result }}</strong> old!</div>
+      {% endif %}
+    </div>
+
+    <!-- 🔥 Constant Tools Card -->
+    <div class="tools-card">
+      <h3>More Tools</h3>
+      <p>Explore other features.</p>
+      <div class="icons">
+        <a href="/">🧮<br>Calci</a>
+        <a href="/emi">🏠<br>EMI</a>
+        <a href="/history">⏳<br>History</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark');
+      toggle.textContent = '🌙';
+    }
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      if (body.classList.contains('dark')) {
+        toggle.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        toggle.textContent = '🌞';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+</body>
+</html>

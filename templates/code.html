@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expression Mode</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="topbar">
+    <h1>Expression Evaluator</h1>
+    <button id="theme-toggle" title="Toggle Theme">🌞</button>
+  </div>
+
+  <div class="main">
+    <div class="calculator-card">
+      <div class="code-card-header">
+        <div>
+          <h2>Pro Math</h2>
+          <p>Write expressions like 3*(4+2) easily! </p>
+          <a href="/" class="back-icon" title="Back to Standard Calculator">↩</a>
+        </div>
+
+      </div>
+
+    <form method="POST" class="expression-form">
+  <input type="text" name="expression" placeholder="Enter expression" value="{{ expression }}">
+  <button type="submit" class="op">Calculate</button>
+</form>
+
+
+
+{% if result %}
+  <div class="result">{{ result }}</div>
+{% endif %}
+
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark');
+      toggle.textContent = '🌙';
+    }
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      if (body.classList.contains('dark')) {
+        toggle.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        toggle.textContent = '🌞';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+</body>
+</html>
+

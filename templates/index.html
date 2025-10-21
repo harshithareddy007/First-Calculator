@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="topbar">
+    <h1>My Calculator</h1>
+    <button id="theme-toggle" title="Toggle Theme">🌞</button>
+  </div>
+
+<div class="main">
+  <div class="calculator-card">
+    <div class="card-header">
+      <div>
+        <h2>Classic Mode</h2>
+        <p>Your go-to zone for quick, clean calculations ✨</p>
+      </div>
+      <a href="{{ url_for('code_calculator') }}" class="code-icon" title="Switch to Expression Mode">&lt;/&gt;</a>
+    </div>
+
+    <div class="display">
+      <span class="small-text">123 + 456</span>
+      <span class="result">579</span>
+    </div>
+
+
+      <div class="buttons">
+        <button>AC</button><button>+/-</button><button>%</button><button class="op">÷</button>
+        <button>7</button><button>8</button><button>9</button><button class="op">×</button>
+        <button>4</button><button>5</button><button>6</button><button class="op">-</button>
+        <button>1</button><button>2</button><button>3</button><button class="op">+</button>
+        <button class="zero">0</button><button>.</button><button class="op">=</button>
+      </div>
+    </div>
+    
+
+    <div class="tools-card">
+      <h3>More Tools</h3>
+      <p>Frequent requests.</p>
+      <div class="icons">
+        <a href="/age">📅<br>Age</a>
+        <a href="/emi">🏠<br>EMI</a>
+        <a href="/history">⏳<br>History</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark');
+      toggle.textContent = '🌙';
+    }
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      if (body.classList.contains('dark')) {
+        toggle.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        toggle.textContent = '🌞';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  </script>
+
+  <script>
+  const displaySmall = document.querySelector('.small-text');
+  const displayResult = document.querySelector('.result');
+  const buttons = document.querySelectorAll('.buttons button');
+
+  let currentInput = '';
+  let previousInput = '';
+  let operator = '';
+  let justCalculated = false;
+
+  function updateDisplay() {
+    displayResult.textContent = currentInput || '0';
+  }
+
+  function calculate() {
+    const prev = parseFloat(previousInput);
+    const curr = parseFloat(currentInput);
+    if (isNaN(prev) || isNaN(curr)) return;
+
+    let result;
+    switch (operator) {
+      case '+': result = prev + curr; break;
+      case '-': result = prev - curr; break;
+      case '×': result = prev * curr; break;
+      case '÷': result = curr === 0 ? 'Error' : prev / curr; break;
+    }
+
+    displaySmall.textContent = `${previousInput} ${operator} ${currentInput} =`;
+    currentInput = result.toString();
+    operator = '';
+    previousInput = '';
+    justCalculated = true;
+    updateDisplay();
+  }
+
+  function handleInput(value) {
+    if (value === 'AC') {
+      currentInput = '';
+      previousInput = '';
+      operator = '';
+      displaySmall.textContent = '';
+      displayResult.textContent = '0';
+      return;
+    }
+
+    if (value === '+/-') {
+      if (currentInput.startsWith('-')) {
+        currentInput = currentInput.slice(1);
+      } else if (currentInput !== '') {
+        currentInput = '-' + currentInput;
+      }
+      updateDisplay();
+      return;
+    }
+
+    if (value === '%') {
+      currentInput = (parseFloat(currentInput) / 100).toString();
+      updateDisplay();
+      return;
+    }
+
+    if (['+', '-', '×', '÷'].includes(value)) {
+      // Handle negative number start case
+      if (value === '-' && currentInput === '') {
+        currentInput = '-';
+        updateDisplay();
+        return;
+      }
+
+      if (previousInput && operator && currentInput !== '') {
+        calculate();
+      }
+
+      operator = value;
+      previousInput = currentInput;
+      currentInput = '';
+      displaySmall.textContent = `${previousInput} ${operator}`;
+      return;
+    }
+
+    if (value === '=') {
+      if (previousInput && currentInput && operator) {
+        calculate();
+      }
+      return;
+    }
+
+    if (justCalculated) {
+      currentInput = '';
+      justCalculated = false;
+    }
+
+    // For numbers or dot
+    if (value === '.' && currentInput.includes('.')) return;
+    currentInput += value;
+    updateDisplay();
+  }
+
+  // Button clicks
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => handleInput(btn.textContent));
+  });
+
+  // Keyboard input
+  document.addEventListener('keydown', (e) => {
+    const key = e.key;
+
+    if (key >= '0' && key <= '9') handleInput(key);
+    else if (key === '.') handleInput('.');
+    else if (key === '+') handleInput('+');
+    else if (key === '-') handleInput('-');
+    else if (key === '*' || key === 'x' || key === 'X') handleInput('×');
+    else if (key === '/' || key === '÷') handleInput('÷');
+    else if (key === 'Enter' || key === '=') handleInput('=');
+    else if (key === 'Backspace') {
+      currentInput = currentInput.slice(0, -1);
+      updateDisplay();
+    } else if (key === 'Escape') handleInput('AC');
+  });
+</script>
+
+<script>
+const toggleBtn = document.getElementById("toggleModeBtn");
+const standardDisplays = document.querySelectorAll(".standard-display");
+const codeDisplay = document.querySelector(".code-display");
+const calcTitle = document.getElementById("calcTitle");
+const calcSubtitle = document.getElementById("calcSubtitle");
+
+let isCodeMode = false;
+
+toggleBtn.addEventListener("click", () => {
+  isCodeMode = !isCodeMode;
+
+  if (isCodeMode) {
+    standardDisplays.forEach(el => el.style.display = "none");
+    codeDisplay.style.display = "block";
+    toggleBtn.innerHTML = "🔢";
+    calcTitle.textContent = "Code Calculator";
+    calcSubtitle.textContent = "Type expressions directly!";
+  } else {
+    standardDisplays.forEach(el => el.style.display = "");
+    codeDisplay.style.display = "none";
+    toggleBtn.innerHTML = "&lt;/&gt;";
+    calcTitle.textContent = "Standard Calculator";
+    calcSubtitle.textContent = "Perform basic calculations.";
+  }
+});
+
+// Code calculator logic
+document.getElementById("calculateBtn").addEventListener("click", () => {
+  const expression = document.getElementById("expression").value;
+  const resultElement = document.getElementById("codeResult");
+
+  try {
+    const output = eval(expression);
+    resultElement.textContent = `Result: ${output}`;
+  } catch {
+    resultElement.textContent = "Invalid Expression ❌";
+  }
+});
+</script>
+
+</body>
+</html>
