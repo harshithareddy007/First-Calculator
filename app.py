@@ -15,9 +15,9 @@ def calculator():
             result = "Error"
 
         # --- SAVE TO HISTORY ---
-        if "history" not in session:
-            session["history"] = []
-        session["history"].append(f"Calci: {expression} = {result}")
+        history = session.get("history", [])
+        history.append(f"Calci: {expression} = {result}")
+        session["history"] = history
 
     return render_template("index.html", result=result)
 
@@ -53,9 +53,10 @@ def age():
         result = f"{years} years, {months} months, and {days} days"
 
         # --- SAVE TO HISTORY ---
-        if "history" not in session:
-            session["history"] = []
-        session["history"].append(f"Age: DOB={dob}, Result={result}")
+        history = session.get("history", [])
+        history.append(f"Age: DOB={dob}, Result={result}")
+        session["history"] = history
+
 
     return render_template("age.html", result=result)
 
@@ -75,9 +76,10 @@ def emi():
         result = f"₹ {emi:,.2f}"
 
         # --- SAVE TO HISTORY ---
-        if "history" not in session:
-            session["history"] = []
-        session["history"].append(f"EMI: P={principal}, R={rate}, T={time}, EMI={result}")
+        history = session.get("history", [])
+        history.append(f"EMI: P={principal}, R={rate}, T={time}, EMI={result}")
+        session["history"] = history
+
 
     return render_template("emi.html", result=result)
 
@@ -94,9 +96,10 @@ def code_calculator():
             result = "Error"
 
         # --- SAVE TO HISTORY ---
-        if "history" not in session:
-            session["history"] = []
-        session["history"].append(f"Expression: {expression} = {result}")
+        history = session.get("history", [])
+        history.append(f"Expression: {expression} = {result}")
+        session["history"] = history    
+
 
     return render_template("code.html", result=result, expression=expression)
 
