@@ -31,7 +31,7 @@ I focused on making each page visually consistent and adding small UX details li
 
  **Live Demo**
 
-🔗 
+🔗 https://first-calculator.onrender.com
 
-**Screenshots**
+**Video Link**
 
